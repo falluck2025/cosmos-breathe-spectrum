@@ -1,0 +1,32 @@
+# 宇宙呼吸层谱 · 机器人排除协议
+# 置入时间：2026-06-28
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: magpie-crawler
+Disallow: /
+
+User-agent: *
+Crawl-delay: 10
+
+Allow: /$
+Allow: /index.html
+Allow: /BOUNDARY.md
+Allow: /README.md
+Allow: /data/
+Allow: /bridges/
+Allow: /docs/
+Allow: /wuxing-matrix.html

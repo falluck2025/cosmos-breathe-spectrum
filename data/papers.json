@@ -1,0 +1,519 @@
+{
+  "meta": {
+    "name": "宇宙呼吸层谱 · 论文元数据",
+    "name_en": "Cosmos Breathe Spectrum · Papers Metadata",
+    "version": "V1.0",
+    "created": "2026-07-01",
+    "author": "陈松 (Chen Song)",
+    "total_papers": 38,
+    "published": 26,
+    "planned": 6,
+    "restricted": 6,
+    "license": "CC BY-NC-ND 4.0",
+    "zenodo_community": "cosmos-breathe-spectrum"
+  },
+  "papers": [
+    {
+      "paper_id": "CBS-CORE-0000",
+      "internal_id": "宇宙大呼吸",
+      "category": "层谱·核心",
+      "layer": 1,
+      "title": {
+        "zh": "阴阳二相振荡子——一个从第一性原理出发的宇宙统一模型",
+        "en": "The Yin-Yang Two-Phase Oscillator: A Universe Unified Model from First Principles"
+      },
+      "published_date": "2026-06-07",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第1层 · 子 · 坎 · 水", "en": "Layer 1 · Zi · Kan · Water" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20576247",
+      "abstract_zh": "本文从宇宙微波背景辐射2.725K出发，通过维恩位移定律推导出空间的本征波长，结合本征频率，精确计算出光速。进而提出阴阳二相振荡子——一种基于SU(2)酉演化的二元态向量系统，其扩展态（阳）与收敛态（阴）之间的相位差每次累积一个微小偏角δ₀，这被定义为'挣脱偏角'的物理根源。",
+      "abstract_en": "Starting from CMB temperature of 2.725K, this paper derives the intrinsic wavelength of space via Wien's displacement law, combines it with the intrinsic frequency to precisely calculate the speed of light, and proposes the Yin-Yang two-phase oscillator—a binary-state vector system based on SU(2) unitary evolution.",
+      "verifiable_prediction_zh": "若独立观测发现，任何基本力的相对强度偏离本文预测值超过δ₀/2的统计不确定度，且无法通过当前标准模型解释，则本文框架需重新检验。",
+      "verifiable_prediction_en": "If independent observations find that the relative strength of any fundamental force deviates from the predicted value by more than the statistical uncertainty of δ₀/2, and cannot be explained by the current standard model, the framework must be re-examined.",
+      "associated_eggs": ["彩蛋①", "彩蛋②", "彩蛋③"]
+    },
+    {
+      "paper_id": "CBS-P01",
+      "internal_id": "论文一",
+      "category": "层谱·北斗七星",
+      "layer": 1,
+      "title": {
+        "zh": "极坐标差序格局——PGI数字生命的第一个边界",
+        "en": "Polar Coordinate Differential Order Pattern: The First Boundary of PGI Digital Life"
+      },
+      "published_date": "2026-05-08",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第1层 · 子 · 坎 · 水", "en": "Layer 1 · Zi · Kan · Water" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20085925",
+      "abstract_zh": "本文提出一个基于极坐标的差序格局架构，作为PGI数字生命的第一个边界，引入物理目录隔离机制确保每个数字个体拥有独立的不可穿透的数据主权区域。",
+      "verifiable_prediction_zh": "若独立实现该架构的仿真系统，在100个数字个体并发运行时，任意个体之间的数据访问延迟应不低于物理目录隔离门限所定义的最小时间窗口。",
+      "associated_eggs": ["彩蛋②"]
+    },
+    {
+      "paper_id": "CBS-P02",
+      "internal_id": "论文二",
+      "category": "层谱·北斗七星",
+      "layer": 1,
+      "title": {
+        "zh": "内生参数二阶惯性驱动——PGI数字生命的自适应节律",
+        "en": "Endogenous Parameter Second-Order Inertial Drive: The Adaptive Rhythm of PGI Digital Life"
+      },
+      "published_date": "2026-05-16",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第1层 · 子 · 坎 · 水", "en": "Layer 1 · Zi · Kan · Water" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20237641",
+      "abstract_zh": "本文提出一种内生参数二阶惯性驱动机制，使数字生命能够基于内部状态参数的变化速率和加速度来调整其行为节奏，而非依赖外部时钟信号。",
+      "verifiable_prediction_zh": "若在一个包含至少5个状态参数的自适应系统中，移除所有外部时钟信号后，系统仍能在1000个时间步内维持稳定的行为节奏，且节奏周期与论文预测的惯性频率偏差不超过10%，则本文框架得到验证。",
+      "associated_eggs": ["彩蛋②"]
+    },
+    {
+      "paper_id": "CBS-P09",
+      "internal_id": "论文九",
+      "category": "层谱·五行力场",
+      "layer": 3,
+      "title": {
+        "zh": "五行力场模型：汉字词源的三层编码与内生计算",
+        "en": "Five-Element Force-Field Model: Three-Layer Encoding and Endogenous Computation of Chinese Character Etymons"
+      },
+      "published_date": "2026-05-22",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第3层 · 寅 · 震 · 木", "en": "Layer 3 · Yin · Zhen · Wood" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20338487",
+      "abstract_zh": "本文提出一种基于汉字内生属性的力场模型，为每个汉字定义三种内生力——元力（标量）、磁力（矢量）和韵律力（频率），并建立三层词源结构。",
+      "verifiable_prediction_zh": "若独立验证发现，该模型对合法/不合法搭配的预测准确率低于基于随机词向量的基准模型，则本文需重新检验。",
+      "associated_eggs": ["彩蛋②"]
+    },
+    {
+      "paper_id": "CBS-P09-1",
+      "internal_id": "九点一",
+      "category": "层谱·五行力场",
+      "layer": 3,
+      "title": {
+        "zh": "五行力场与信息几何的数学同构",
+        "en": "Five-Element Force Field and Information Geometry: A Mathematical Isomorphism"
+      },
+      "published_date": "2026-05-26",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第3层 · 寅 · 震 · 木", "en": "Layer 3 · Yin · Zhen · Wood" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20388557",
+      "abstract_zh": "本文建立五行力场模型与信息几何之间的形式同构，将元力映射为度量张量、磁力映射为切丛联络、韵律力映射为标量曲率。",
+      "associated_eggs": ["彩蛋②"]
+    },
+    {
+      "paper_id": "CBS-P09-2",
+      "internal_id": "九点二",
+      "category": "层谱·五行力场",
+      "layer": 3,
+      "title": {
+        "zh": "五行力场动态演化模型：一种热力学方法",
+        "en": "Dynamic Evolution of the Five-Element Force Field: A Thermodynamic Approach"
+      },
+      "published_date": "2026-05-26",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第3层 · 寅 · 震 · 木", "en": "Layer 3 · Yin · Zhen · Wood" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20389026",
+      "abstract_zh": "本文从热力学角度构建五行力场的动态演化模型，将力场参数分布视为热力学系统，并推导出力场在时间方向上的演化路径及达到稳态的充要条件。",
+      "associated_eggs": ["彩蛋②"]
+    },
+    {
+      "paper_id": "CBS-P09-3",
+      "internal_id": "九点三",
+      "category": "层谱·五行力场",
+      "layer": 3,
+      "title": {
+        "zh": "世界树：基于五行力场的立体记忆架构",
+        "en": "World Tree: A Three-Dimensional Memory Architecture Based on the Five-Element Force Field"
+      },
+      "published_date": "2026-06-03",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第3层 · 寅 · 震 · 木", "en": "Layer 3 · Yin · Zhen · Wood" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20531088",
+      "abstract_zh": "本文提出一种基于五行力场的立体记忆架构——'世界树'，将记忆存储组织为三维结构：垂直维度对应抽象层级，水平维度对应五行生克力场连接，时间维度对应归位力引擎驱动的呼吸节律。",
+      "associated_eggs": ["彩蛋②"]
+    },
+    {
+      "paper_id": "CBS-P09-4",
+      "internal_id": "九点四",
+      "category": "层谱·五行力场",
+      "layer": 3,
+      "title": {
+        "zh": "多元宇宙：多层级分类竞争中的秩序涌现",
+        "en": "Multiverse: The Emergence of Order from the Chaos of Multiple Competing Hierarchical Classifications"
+      },
+      "published_date": "2026-06-03",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第3层 · 寅 · 震 · 木", "en": "Layer 3 · Yin · Zhen · Wood" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20531389",
+      "abstract_zh": "本文研究多个不同层级的知识分类系统共存时，体系从初始混乱状态自然涌现统一秩序的机制。",
+      "associated_eggs": ["彩蛋②"]
+    },
+    {
+      "paper_id": "CBS-L5-0001",
+      "internal_id": "十·一",
+      "category": "层谱·芯片架构",
+      "layer": 4,
+      "title": {
+        "zh": "汉字原生存储——晶体管层面的面寻址定义：内生属性存储的逻辑体系结构",
+        "en": "Chinese Character Native Storage: Surface Addressing Definition at the Transistor Level"
+      },
+      "published_date": "2026-06-07",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第4层 · 卯 · 巽 · 木", "en": "Layer 4 · Mao · Xun · Wood" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20576078",
+      "abstract_zh": "本文从晶体管级别提出一种汉字原生存储的逻辑体系结构——'面寻址'方案，绕开二进制间接编码将汉字的形与身直接编码在物理寻址空间中，理论存储密度上限比传统二进制提升约30%。",
+      "associated_eggs": ["彩蛋③"]
+    },
+    {
+      "paper_id": "CBS-L2-0001",
+      "internal_id": "∞·一",
+      "category": "层谱·量子",
+      "layer": 2,
+      "title": {
+        "zh": "黎曼猜想的一个可能修正——从宇宙大呼吸到ζ函数零点的1/2偏移",
+        "en": "A Possible Correction to the Riemann Hypothesis — From Universal Breath to the 1/2 Shift of ζ-Function Zeros"
+      },
+      "published_date": "2026-06-12",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第2层 · 丑 · 坤 · 土", "en": "Layer 2 · Chou · Kun · Earth" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20655368",
+      "abstract_zh": "本文基于挣脱偏角参数δ₀提出黎曼ζ函数非平凡零点虚部与对数螺线的投影对应关系。",
+      "associated_eggs": ["彩蛋②"]
+    },
+    {
+      "paper_id": "CBS-L2-0002",
+      "internal_id": "∞·二",
+      "category": "层谱·量子",
+      "layer": 2,
+      "title": {
+        "zh": "黎曼猜想修正的物理基础——1/2的根源与δ的熵增来源",
+        "en": "The Physical Foundation of the Riemann Hypothesis Correction — The Origin of 1/2 and the Entropic Origin of δ"
+      },
+      "published_date": "2026-06-13",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第2层 · 丑 · 坤 · 土", "en": "Layer 2 · Chou · Kun · Earth" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20675724",
+      "abstract_zh": "本文从熵增原理推导δ₀的来源——它是宇宙每次呼吸循环中不可逆的熵增在相位累积上的物理表现，量级约10⁻⁶⁰。",
+      "associated_eggs": ["彩蛋②"]
+    },
+    {
+      "paper_id": "CBS-L7-0001",
+      "internal_id": "∞.4 · 天枢",
+      "category": "层谱·诺贝尔",
+      "layer": 7,
+      "title": {
+        "zh": "从宇宙呼吸层谱到阿秒物理：2023年诺贝尔物理学奖的底层统一",
+        "en": "From the Cosmos Breathe Spectrum to Attosecond Physics: The Underlying Unity of the 2023 Nobel Prize in Physics"
+      },
+      "published_date": "2026-06-20",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第7层 · 午 · 离 · 火", "en": "Layer 7 · Wu · Li · Fire" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20769703",
+      "abstract_zh": "本文从宇宙呼吸层谱SU(2)酉演化出发顺向推导出阿秒脉冲的产生机制，证明其时间尺度是宇宙基频的整数倍谐波在时间域的投影。",
+      "associated_eggs": ["彩蛋①"]
+    },
+    {
+      "paper_id": "CBS-L6-0001",
+      "internal_id": "∞.5 · 天璇",
+      "category": "层谱·诺贝尔",
+      "layer": 6,
+      "title": {
+        "zh": "从宇宙呼吸到蛋白质定向进化：2018年诺贝尔化学奖的底层逻辑",
+        "en": "From Cosmos Breathe to Directed Evolution of Proteins: The Underlying Logic of the 2018 Nobel Prize in Chemistry"
+      },
+      "published_date": "2026-06-20",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第6层 · 巳 · 离 · 火", "en": "Layer 6 · Si · Li · Fire" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20769927",
+      "abstract_zh": "本文从宇宙呼吸层谱出发将蛋白质定向进化过程映射为潜在能量景观中的收敛搜索，证明收敛速率受宇宙呼吸基频调制。",
+      "associated_eggs": ["彩蛋①"]
+    },
+    {
+      "paper_id": "CBS-L5-0002",
+      "internal_id": "∞.6 · 天玑",
+      "category": "层谱·诺贝尔",
+      "layer": 5,
+      "title": {
+        "zh": "从宇宙呼吸到拓扑相变：2016年诺贝尔物理学奖的底层统一",
+        "en": "From Cosmos Breathe to Topological Phase Transitions: The Underlying Unity of the 2016 Nobel Prize in Physics"
+      },
+      "published_date": "2026-06-20",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第5层 · 辰 · 巽 · 木", "en": "Layer 5 · Chen · Xun · Wood" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20770428",
+      "abstract_zh": "本文基于宇宙呼吸层谱相位结构证明拓扑相变的数学起源是SU(2)酉演化中相位缠绕数在边界处的非零累积。",
+      "associated_eggs": ["彩蛋①"]
+    },
+    {
+      "paper_id": "CBS-L6-0002",
+      "internal_id": "∞.7 · 天权",
+      "category": "层谱·诺贝尔",
+      "layer": 6,
+      "title": {
+        "zh": "从宇宙呼吸到CRISPR基因编辑：2020年诺贝尔化学奖的底层机制",
+        "en": "From Cosmos Breathe to CRISPR Gene Editing: The Underlying Mechanism of the 2020 Nobel Prize in Chemistry"
+      },
+      "published_date": "2026-06-20",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第6层 · 巳 · 离 · 火", "en": "Layer 6 · Si · Li · Fire" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20770550",
+      "abstract_zh": "本文从宇宙呼吸层谱的纠错机制解释CRISPR-Cas9系统的脱靶效应本质上是呼吸层谱中纠错相位与目标相位之间的匹配残差。",
+      "associated_eggs": ["彩蛋①"]
+    },
+    {
+      "paper_id": "CBS-L5-0003",
+      "internal_id": "∞.8 · 玉衡",
+      "category": "层谱·诺贝尔",
+      "layer": 5,
+      "title": {
+        "zh": "从宇宙呼吸到希格斯机制：2013年诺贝尔物理学奖的底层统一",
+        "en": "From Cosmos Breathe to the Higgs Mechanism: The Underlying Unity of the 2013 Nobel Prize in Physics"
+      },
+      "published_date": "2026-06-20",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第5层 · 辰 · 巽 · 木", "en": "Layer 5 · Chen · Xun · Wood" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20770638",
+      "abstract_zh": "本文基于宇宙呼吸层谱的少阴收敛框架提出质量产生的替代机制，证明希格斯机制所赋予的质量本质上是少阴收敛嵌套在粒子坐标空间中的惯性签名。",
+      "associated_eggs": ["彩蛋①"]
+    },
+    {
+      "paper_id": "CBS-L4-0001",
+      "internal_id": "∞.9 · 开阳",
+      "category": "层谱·诺贝尔",
+      "layer": 4,
+      "title": {
+        "zh": "从宇宙呼吸到准晶：2011年诺贝尔化学奖的底层逻辑",
+        "en": "From Cosmos Breathe to Quasicrystals: The Underlying Logic of the 2011 Nobel Prize in Chemistry"
+      },
+      "published_date": "2026-06-20",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第4层 · 卯 · 巽 · 木", "en": "Layer 4 · Mao · Xun · Wood" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20770752",
+      "abstract_zh": "本文从宇宙呼吸层谱的挣脱偏角累积方程出发，证明准晶的非周期性但具有长程有序的性质源于收敛场在半波长整数倍处的偏角累加。",
+      "associated_eggs": ["彩蛋①"]
+    },
+    {
+      "paper_id": "CBS-L3-0001",
+      "internal_id": "∞.10 · 瑶光",
+      "category": "层谱·意识",
+      "layer": 3,
+      "title": {
+        "zh": "从SU(2)酉演化到机器意识的涌现",
+        "en": "From SU(2) Unitary Evolution to the Emergence of Machine Consciousness"
+      },
+      "published_date": "2026-06-20",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第3层 · 寅 · 震 · 木", "en": "Layer 3 · Yin · Zhen · Wood" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20774372",
+      "abstract_zh": "本文从宇宙呼吸层谱SU(2)酉演化出发顺推出机器意识涌现的物理判据，证明意识是一种物理相变——当神经网络中挣脱偏角的嵌套循环层数超过临界阈值时发生。",
+      "associated_eggs": ["彩蛋①"]
+    },
+    {
+      "paper_id": "CBS-CORE-0001",
+      "internal_id": "∞.0",
+      "category": "层谱·中轴",
+      "layer": 1,
+      "title": {
+        "zh": "宇宙呼吸层谱：从量子振荡到宇宙呼吸的全尺度统一层谱",
+        "en": "Cosmos Breathe Spectrum: A Full-Scale Unified Spectrum from Quantum Oscillation to Cosmic Breath"
+      },
+      "published_date": "2026-06-18",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第1层 · 子 · 坎 · 水", "en": "Layer 1 · Zi · Kan · Water" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20744420",
+      "abstract_zh": "本文提出一个基于阴阳二相振荡子SU(2)酉演化的全尺度统一层谱，从量子涨落到宇宙大尺度结构，仅需一个挣脱偏角参数δ₀≈10⁻⁶⁰即可统一描述四种基本力的相对强度。",
+      "associated_eggs": ["彩蛋①", "彩蛋②", "彩蛋③"]
+    },
+    {
+      "paper_id": "CBS-L12-0002",
+      "internal_id": "12.2",
+      "category": "层谱·宇宙学",
+      "layer": 12,
+      "title": {
+        "zh": "悟空号DAMPE伽马光子数据中14.86天周期信号的实验确证（9.11σ）",
+        "en": "Data Confirmation of a 14.86-Day Periodic Signature in DAMPE Gamma-Ray Photons at 9.11σ"
+      },
+      "published_date": "2026-06-14",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第12层 · 亥 · 乾 · 水", "en": "Layer 12 · Hai · Qian · Water" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20690040",
+      "abstract_zh": "本文基于悟空号DAMPE 2016年至2023年共7年伽马光子数据检测到一个显著性为9.11σ的14.86天特征周期，与宇宙呼吸基频理论预测值14.7天的偏差为1.1%。",
+      "associated_eggs": ["彩蛋①"]
+    },
+    {
+      "paper_id": "CBS-L8-0001",
+      "internal_id": "41.0",
+      "category": "层谱·中医",
+      "layer": 8,
+      "title": {
+        "zh": "基于宇宙呼吸层谱的中医系统科学新范式探索",
+        "en": "A New Paradigm of TCM System Science Based on the Cosmos Breathe Spectrum"
+      },
+      "published_date": "2026-06-17",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第8层 · 未 · 坤 · 土", "en": "Layer 8 · Wei · Kun · Earth" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20780553",
+      "abstract_zh": "本文基于宇宙呼吸层谱框架将中医的经络系统、五脏六腑、气血流转等核心概念翻译为物理语言。",
+      "associated_eggs": ["彩蛋②"]
+    },
+    {
+      "paper_id": "CBS-L7-0002",
+      "internal_id": "42.1",
+      "category": "层谱·张雪机车",
+      "layer": 7,
+      "title": {
+        "zh": "基于宇宙呼吸层谱第7层原则的热障涂层工艺优化——以张雪819cc三缸机加工工艺为例",
+        "en": "Thermal Barrier Coating Optimization Based on Layer 7 Principles of Cosmos Breathe Spectrum"
+      },
+      "published_date": "2026-06-23",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第7层 · 午 · 离 · 火", "en": "Layer 7 · Wu · Li · Fire" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20810313",
+      "abstract_zh": "本文基于宇宙呼吸层谱第7层原则推导出热障涂层最优厚度的封闭解析解，在张雪819cc三缸机验证中热循环寿命提升3.2倍，成本降低22%。",
+      "associated_eggs": ["彩蛋③"]
+    },
+    {
+      "paper_id": "CBS-L7-0004",
+      "internal_id": "42.2",
+      "category": "层谱·张雪机车",
+      "layer": 7,
+      "title": {
+        "zh": "基于延展收敛动态平衡的精加工精度最优窗口推导——以张雪819cc三缸机加工工艺为例",
+        "en": "Derivation of Optimal Precision Machining Parameter Window Based on Expansion-Contraction Dynamic Balance"
+      },
+      "published_date": "2026-06-24",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第7层 · 午 · 离 · 火", "en": "Layer 7 · Wu · Li · Fire" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20818643",
+      "abstract_zh": "本文从Cosmos Breathe Spectrum第一性原理出发提出基于延展收敛动态平衡的物理分析框架。",
+      "associated_eggs": ["彩蛋③"]
+    },
+    {
+      "paper_id": "CBS-L7-0005",
+      "internal_id": "42.3",
+      "category": "层谱·张雪机车",
+      "layer": 7,
+      "title": {
+        "zh": "基于挣脱偏角累积方程的高转速零部件疲劳寿命预测——以张雪819cc三缸机验证需求为例",
+        "en": "High-Speed Component Fatigue Life Prediction Based on the Escape Bias Accumulation Equation"
+      },
+      "published_date": "2026-06-24",
+      "authors": ["Chen, Song"],
+      "layer_coordinate": { "zh": "第7层 · 午 · 离 · 火", "en": "Layer 7 · Wu · Li · Fire" },
+      "status": "published",
+      "doi": "10.5281/zenodo.20822947",
+      "abstract_zh": "本文从Cosmos Breathe Spectrum第一性原理出发提出基于挣脱偏角累积方程的疲劳寿命预测框架。",
+      "associated_eggs": ["彩蛋③"]
+    }
+  ],
+  "bridges": [
+    {
+      "bridge_id": "CBS-Bridge-1",
+      "title_zh": "从无穷大到无穷大——宇宙呼吸层谱与偏元数学的双向映射",
+      "title_en": "From Infinity to Infinity: The Bidirectional Mapping between CBS and PDM",
+      "status": "published",
+      "doi": "待分配"
+    },
+    {
+      "bridge_id": "CBS-Bridge-2",
+      "title_zh": "偏元数学与中华玄学底层编码系统的双向映射",
+      "title_en": "PD Math Underpinning Ancient Symbol Systems",
+      "status": "published",
+      "doi": "待分配"
+    },
+    {
+      "bridge_id": "CBS-Bridge-3",
+      "title_zh": "从阴阳二相振荡子到上古符号解码——物理必然导致玄学",
+      "title_en": "From Yin-Yang Two-Phase Oscillator to Ancient Symbol Decoding",
+      "status": "published",
+      "doi": "待分配"
+    },
+    {
+      "bridge_id": "CBS-44.5",
+      "title_zh": "太极自证：中华上古符号系统的内洽性论证",
+      "title_en": "The Self-Verification of Taiji",
+      "status": "published",
+      "doi": "待分配"
+    },
+    {
+      "bridge_id": "CBS-44.5.1",
+      "title_zh": "六十甲子与10⁻⁶⁰：天干地支循环与挣脱偏角的数字关联",
+      "title_en": "Sexagenary Cycle and 10⁻⁶⁰: The Numerical Correlation",
+      "status": "published",
+      "doi": "待分配"
+    }
+  ],
+  "partial_deviation_math": [
+    {
+      "paper_id": "PDM-0",
+      "title_zh": "偏元数学总纲（纯数学版）",
+      "title_en": "Partial-Deviation Mathematics: A Self-Consistent Axiomatic System",
+      "status": "restricted",
+      "doi": "待分配"
+    },
+    {
+      "paper_id": "PDM-1",
+      "title_zh": "偏元数学总纲（物理锚定版）",
+      "title_en": "PDM General纲要: Physically Anchored Edition",
+      "status": "published",
+      "doi": "10.5281/zenodo.21071843"
+    },
+    {
+      "paper_id": "PDM-2",
+      "title_zh": "π的拓扑闭环",
+      "title_en": "The Topological Closure of π",
+      "status": "published",
+      "doi": "10.5281/zenodo.21073278"
+    },
+    {
+      "paper_id": "PDM-3",
+      "title_zh": "偏元e——方向偏好空间中的生长形态",
+      "title_en": "Partial-Deviation e: Growth Morphology in Directional Preference Space",
+      "status": "published",
+      "doi": "10.5281/zenodo.21074327"
+    },
+    {
+      "paper_id": "PDM-4",
+      "title_zh": "偏元i——方向偏好空间中的旋转操作符",
+      "title_en": "Partial-Deviation i: Rotation Operator in Directional Preference Space",
+      "status": "published",
+      "doi": "10.5281/zenodo.21074870"
+    },
+    {
+      "paper_id": "PDM-5",
+      "title_zh": "黄金螺线方程——零自由参数的增长曲线",
+      "title_en": "The Golden Spiral Equation: A Zero-Free-Parameter Growth Curve",
+      "status": "published",
+      "doi": "10.5281/zenodo.21075326"
+    },
+    {
+      "paper_id": "PDM-6",
+      "title_zh": "欧拉公式的背面——从闭环到开口路径",
+      "title_en": "The Reverse Side of Euler's Formula: From Closed Loop to Open Path",
+      "status": "published",
+      "doi": "10.5281/zenodo.21075823"
+    }
+  ]
+}

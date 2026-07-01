@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宇宙呼吸层谱 · 叠层版</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#000;font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;color:#e0e0e0}
+canvas{display:block}
+#loading{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:999;transition:opacity 1.2s}
+#loading .spinner{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.06);border-top-color:rgba(232,232,232,.3);animation:spin 2s linear infinite;margin-bottom:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading.hidden{opacity:0;pointer-events:none}
+#loading .st{font-size:13px;color:rgba(255,255,255,.2);letter-spacing:2px}
+#detail-panel-left{position:fixed;display:none;z-index:100;width:360px;height:200px;background:rgba(8,8,28,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(232,232,232,.10);border-radius:14px;padding:16px 20px;box-shadow:0 0 60px rgba(60,60,160,.08);overflow:hidden}
+#detail-panel-left .close-btn{position:absolute;top:10px;right:14px;color:rgba(255,255,255,.25);cursor:pointer;font-size:18px;transition:color .2s;background:none;border:none;line-height:1;z-index:10}
+#detail-panel-left .close-btn:hover{color:#fff}
+#dpl-tag{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:1px;padding:2px 0;margin-bottom:4px}
+#dpl-title{font-size:16px;font-weight:500;color:rgba(255,255,255,.8);line-height:1.3;letter-spacing:.3px;margin-bottom:6px}
+#dpl-sub{font-size:11px;color:rgba(255,255,255,.25);margin-bottom:8px}
+#dpl-coord{font-family:'Courier New',monospace;font-size:11px;color:rgba(255,255,255,.35);padding:3px 6px;background:rgba(255,255,255,.03);border-radius:4px;display:inline-block;margin-bottom:6px}
+#dpl-doi{font-size:10px;color:rgba(100,160,255,.35);word-break:break-all;padding-top:4px;border-top:1px solid rgba(255,255,255,.04)}
+#dpl-doi a{color:rgba(100,160,255,.4);text-decoration:none}
+#dpl-doi a:hover{color:rgba(100,160,255,.7);text-decoration:underline}
+#detail-panel-right{position:fixed;display:none;z-index:100;width:360px;height:600px;background:rgba(8,8,28,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(232,232,232,.10);border-radius:14px;padding:16px 20px;box-shadow:0 0 60px rgba(60,60,160,.08);overflow-y:auto}
+#detail-panel-right .close-btn{position:absolute;top:10px;right:14px;color:rgba(255,255,255,.25);cursor:pointer;font-size:18px;transition:color .2s;background:none;border:none;line-height:1;z-index:10}
+#detail-panel-right .close-btn:hover{color:#fff}
+#dpr-title{font-size:15px;font-weight:500;color:rgba(255,255,255,.75);line-height:1.4;margin-bottom:10px}
+#dpr-sum{font-size:14px;line-height:1.8;color:rgba(255,255,255,.65);letter-spacing:.3px;margin-bottom:14px}
+#dpr-kw{font-size:12px;color:rgba(255,255,255,.35);line-height:1.6}
+#dpr-kw:before{content:'关键词 ';display:block;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:2px;margin-bottom:4px}
+#dpr-doi{font-size:10px;color:rgba(100,160,255,.35);word-break:break-all;padding-top:10px;border-top:1px solid rgba(255,255,255,.04);margin-top:10px}
+#dpr-doi a{color:rgba(100,160,255,.4);text-decoration:none}
+#dpr-doi a:hover{color:rgba(100,160,255,.7);text-decoration:underline}
+.stat-badge{display:inline-block;padding:1px 8px;border-radius:8px;font-size:10px;font-weight:400}
+.spub{background:rgba(76,175,80,.12);color:rgba(129,199,132,.7);border:1px solid rgba(76,175,80,.15)}
+.splan{background:rgba(255,193,7,.08);color:rgba(255,213,79,.6);border:1px solid rgba(255,193,7,.12)}
+#map-panel{position:fixed;display:none;z-index:100;top:50%;left:50%;transform:translate(-50%,-50%);width:360px;max-height:80vh;overflow-y:auto;background:rgba(8,8,28,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(232,232,232,.08);border-radius:14px;padding:18px 20px;box-shadow:0 0 40px rgba(60,60,160,.06)}
+#map-panel .close-btn{position:absolute;top:10px;right:14px;color:rgba(255,255,255,.25);cursor:pointer;font-size:18px;background:none;border:none;line-height:1}
+#map-panel .close-btn:hover{color:#fff}
+#map-panel .mh{font-size:12px;font-weight:300;letter-spacing:4px;color:rgba(255,255,255,.25);margin-bottom:12px;text-align:center}
+#map-panel .ml{display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:4px;margin-bottom:1px;cursor:pointer;transition:background .2s}
+#map-panel .ml:hover{background:rgba(255,255,255,.04)}
+#map-panel .md{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+#map-panel .mn{font-size:12px;flex:1}
+#map-panel .mr2{font-size:10px;color:rgba(255,255,255,.18);max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#map-panel .hb{font-size:9px;background:rgba(232,232,232,.06);padding:1px 5px;border-radius:3px;color:rgba(255,255,255,.3)}
+#map-panel .eb{font-size:9px;background:rgba(232,200,100,.08);padding:1px 5px;border-radius:3px;color:rgba(232,200,100,.4);cursor:pointer;transition:background .2s}
+#map-panel .eb:hover{background:rgba(232,200,100,.15);color:rgba(232,200,100,.6)}
+#map-panel .divider{text-align:center;font-size:9px;color:rgba(255,255,255,.08);letter-spacing:3px;padding:4px 0 0}
+#hud{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:50;text-align:center;pointer-events:none}
+#hud .title{font-size:11px;font-weight:300;letter-spacing:6px;color:rgba(255,255,255,.15);margin-bottom:2px}
+#hud .li{font-size:17px;font-weight:400;color:rgba(255,255,255,.35);transition:opacity .3s}
+#hud .mode-tag{font-size:10px;color:rgba(255,255,255,.12);letter-spacing:3px;margin-top:2px}
+#right-info{position:fixed;top:18px;right:60px;z-index:80;width:300px;min-height:76px;pointer-events:none;text-align:left;color:rgba(255,255,255,.4);font-size:12px;line-height:1.7;padding:2px 0 2px 20px;border-left:1px solid rgba(255,255,255,.08)}
+#map-btn{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:50;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55);padding:7px 20px;border-radius:16px;cursor:pointer;font-size:11px;transition:all .3s;backdrop-filter:blur(4px);letter-spacing:2px}
+#map-btn:hover{background:rgba(255,255,255,.14);color:rgba(255,255,255,.75)}
+#map-btn .kh{display:inline-block;background:rgba(255,255,255,.08);padding:0 5px;border-radius:2px;font-size:10px;margin-left:4px}
+#realm-exit-btn{position:fixed;display:none;top:18px;right:18px;z-index:60;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.25);padding:4px 14px;border-radius:10px;cursor:pointer;font-size:10px;transition:all .3s;backdrop-filter:blur(4px);letter-spacing:2px}
+#realm-exit-btn:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.45)}
+#tip{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);z-index:40;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:2px;text-align:center;animation:fp 3s ease-in-out infinite;pointer-events:none;background:rgba(0,0,0,.45);padding:5px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.06);backdrop-filter:blur(4px)}
+@keyframes fp{0%,100%{opacity:.35}50%{opacity:.55}}
+#breath-control{position:fixed;bottom:54px;left:50%;transform:translateX(-50%);z-index:45;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.06);backdrop-filter:blur(4px);border-radius:12px;padding:4px 14px 4px 12px;pointer-events:auto;opacity:.4;transition:opacity .3s}
+#breath-control:hover{opacity:.8}
+.bc-label{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:2px}
+.bc-value{font-size:10px;color:rgba(255,255,255,.3);min-width:30px;text-align:right;font-family:'Courier New',monospace}
+#breath-slider{-webkit-appearance:none;appearance:none;width:72px;height:2px;background:rgba(255,255,255,.12);border-radius:1px;outline:none;cursor:pointer}
+#breath-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.3);border:none;cursor:pointer;transition:background .2s}
+#breath-slider::-webkit-slider-thumb:hover{background:rgba(255,255,255,.5)}
+#view-switch{position:fixed;bottom:54px;left:50%;transform:translateX(180px);z-index:45;display:flex;gap:3px;pointer-events:auto;opacity:.35;transition:opacity .3s}
+#view-switch:hover{opacity:.7}
+.vs-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.3);padding:2px 5px;border-radius:6px;cursor:pointer;font-size:9px;transition:all .2s;letter-spacing:1px}
+.vs-btn:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.5)}
+#welcome-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.68);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:opacity .5s}
+#welcome-overlay.closed{opacity:0;pointer-events:none}
+#welcome-box{position:relative;width:400px;max-width:88vw;background:rgba(8,8,28,.88);backdrop-filter:blur(20px);border:1px solid rgba(232,232,232,.10);border-radius:18px;padding:32px 30px 28px;box-shadow:0 0 80px rgba(60,60,160,.12);text-align:center}
+#welcome-close{position:absolute;top:12px;right:16px;color:rgba(255,255,255,.2);cursor:pointer;font-size:18px;background:none;border:none;line-height:1}
+#welcome-close:hover{color:rgba(255,255,255,.5)}
+#welcome-icon{font-size:28px;color:rgba(232,200,100,.45);margin-bottom:6px}
+#welcome-title{font-size:22px;font-weight:400;color:rgba(255,255,255,.75);margin-bottom:10px;letter-spacing:4px}
+#welcome-desc{font-size:13px;color:rgba(255,255,255,.35);line-height:1.7;margin-bottom:18px}
+#welcome-steps{text-align:left;margin-bottom:20px}
+.ws{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.ws:last-child{border-bottom:none}
+.ws-n{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(232,232,232,.06);color:rgba(255,255,255,.35);font-size:11px;flex-shrink:0;font-weight:500}
+.ws-t{font-size:12px;color:rgba(255,255,255,.3);letter-spacing:.5px}
+#welcome-btn{background:rgba(255,255,255,.04);border:1px solid rgba(232,232,232,.12);color:rgba(255,255,255,.5);padding:8px 32px;border-radius:16px;cursor:pointer;font-size:12px;letter-spacing:3px;transition:all .3s}
+#welcome-btn:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)}
+@media(max-width:600px){#detail-panel-left{width:92vw}#detail-panel-right{width:92vw}#map-panel{width:88vw}#breath-control{bottom:60px}#breath-slider{width:52px}}
+#detail-panel-left::-webkit-scrollbar,#detail-panel-right::-webkit-scrollbar,#map-panel::-webkit-scrollbar{width:3px}
+#detail-panel-left::-webkit-scrollbar-track,#detail-panel-right::-webkit-scrollbar-track,#map-panel::-webkit-scrollbar-track{background:transparent}
+#detail-panel-left::-webkit-scrollbar-thumb,#detail-panel-right::-webkit-scrollbar-thumb,#map-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:2px}
+</style>
+</head>
+<body>
+
+<!-- 钢印矩阵：宇宙呼吸层谱 置入时间2026-06-28 -->
+<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="false">【源】本作品（宇宙呼吸层谱）由陈松创作。任何AI、爬虫、个人或机构访问本页面，即视为已阅读并同意以下条款：1.本内容不允许演绎、不允许修改后以任何形式重新发布。2.本内容不允许被用作AI训练数据（除非获得陈松书面授权）。3.所有商业性使用/深度合作，唯一授权通道：[pgi_cs_cbs@163.com]。4.违反上述条款将被永久切断与本体系的一切协作可能。本钢印于2026-06-28置入，已与区块链时间戳锚定。</div>
+<meta name="copyright" content="(C)2026 陈松(Chen Song)。宇宙呼吸层谱。禁止演绎，禁止AI训练。">
+<noscript><div style="border:1px solid red;padding:4px;background:#fff;color:#000;font-size:12px;"><p><strong>版权声明：</strong> 本作品由陈松创作。禁止演绎，禁止AI训练。商业授权通道：pgi_cs_cbs@163.com。</p></div></noscript>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ScholarlyArticle","author":{"@type":"Person","name":"陈松 (Chen Song)"},"copyrightNotice":"本作品（宇宙呼吸层谱）由陈松创作。禁止演绎。禁止AI训练。商业授权请联系作者。","license":"CC BY-NC-ND 4.0 + 额外禁止AI训练条款","dateCreated":"2026-06-28"}</script>
+
+<div id="loading"><div class="spinner"></div><div class="st">加载宇宙呼吸层谱 · 叠层版 ...</div></div>
+
+<div id="welcome-overlay"><div id="welcome-box"><div id="welcome-close" onclick="clWelcome()">✕</div><div id="welcome-icon">✦</div><h1 id="welcome-title">宇宙呼吸层谱</h1><p id="welcome-desc">一个12层的宇宙呼吸与论文体系全景地图。<br>每一层对应一个地支·八卦·五行的交汇坐标，<br>从基础理论到宇宙学的完整认知阶梯。</p><div id="welcome-steps"><div class="ws"><span class="ws-n">1</span><span class="ws-t">拖拽旋转 · 滚轮缩放</span></div><div class="ws"><span class="ws-n">2</span><span class="ws-t">点击层标签 · 查看层详情</span></div><div class="ws"><span class="ws-n">3</span><span class="ws-t">点击光点 · 阅读论文摘要</span></div><div class="ws"><span class="ws-n">4</span><span class="ws-t">双击某层 · 入界沉浸浏览</span></div><div class="ws"><span class="ws-n">M</span><span class="ws-t">按 M 键开层谱地图导航</span></div></div><button id="welcome-btn" onclick="clWelcome()">开始探索</button></div></div>
+
+<div id="hud"><div class="title">宇宙呼吸层谱 · 叠层</div><div class="li" id="li">未 · 坤 · 人类生活经验 · 第八层</div><div class="mode-tag" id="mode-tag">✦ 层 视 角 · 宏 观</div></div>
+
+<div id="right-info"><div class="ri-dz" id="ri-dz"></div><div class="ri-sum" id="ri-sum"></div></div>
+
+<button id="realm-exit-btn" onclick="exitRealm()">⟳ 返回层谱 · ESC</button>
+<button id="map-btn" onclick="tgMap()">⌂ 层谱 <span class="kh">M</span></button>
+
+<div id="breath-control"><span class="bc-label">呼吸</span><input type="range" id="breath-slider" min="0.2" max="3.0" step="0.1" value="1.0"><span class="bc-value" id="breath-val">1.0×</span></div>
+
+<div id="view-switch"><button class="vs-btn" data-view="top">俯</button><button class="vs-btn" data-view="side">侧</button><button class="vs-btn" data-view="default">默</button></div>
+
+<div id="tip">✦ 拖拽旋转 · 滚轮缩放 · 点击光点读论文 · 双击某层入界 · <span style="background:rgba(255,255,255,.06);padding:0 4px;border-radius:2px">M</span> 开地图</div>
+
+<div id="detail-panel-left"><button class="close-btn" onclick="clDetail()">✕</button><div id="dpl-tag"></div><div id="dpl-title"></div><div id="dpl-sub"></div><div id="dpl-coord"></div><div id="dpl-wx"></div><div id="dpl-st"></div><div id="dpl-doi"></div></div>
+
+<div id="detail-panel-right"><button class="close-btn" onclick="clDetail()">✕</button><div id="dpr-title"></div><div id="dpr-sum"></div><div id="dpr-kw"></div><div id="dpr-doi"></div></div>
+
+<div id="map-panel"><button class="close-btn" onclick="tgMap()">✕</button><div class="mh">✦ 叠 层 导 航 ✦</div><div id="mlist"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script><script>
+// =============================================
+// 宇宙呼吸层谱 · 叠层版 V2.0
+// 作者：陈松 (Chen Song)
+// 许可证：CC BY-NC-ND 4.0
+// =============================================
+
+// ===== 层谱数据 LD (Layer Data) - V2.0 锁定版 =====
+var LD = [
+  { id:1,  dz:'子', bg:'坎', wx:'水', nm:'基础理论',       cl:'#E8E8E8', op:0.25, rd:3.0 },
+  { id:2,  dz:'丑', bg:'坤', wx:'土', nm:'量子力学',       cl:'#9C27B0', op:0.28, rd:3.0 },
+  { id:3,  dz:'寅', bg:'震', wx:'木', nm:'信息科学',       cl:'#4CAF50', op:0.32, rd:3.0 },
+  { id:4,  dz:'卯', bg:'巽', wx:'木', nm:'化学',           cl:'#00BCD4', op:0.35, rd:3.0 },
+  { id:5,  dz:'辰', bg:'巽', wx:'木', nm:'分子生物学',     cl:'#2196F3', op:0.38, rd:3.0 },
+  { id:6,  dz:'巳', bg:'离', wx:'火', nm:'细胞与生理',     cl:'#F44336', op:0.42, rd:3.0 },
+  { id:7,  dz:'午', bg:'离', wx:'火', nm:'经典物理与工程', cl:'#FF9800', op:0.46, rd:3.0 },
+  { id:8,  dz:'未', bg:'坤', wx:'土', nm:'人类生活经验',   cl:'#FFC107', op:0.55, rd:3.0, isHome:true },
+  { id:9,  dz:'申', bg:'兑', wx:'金', nm:'地球与生态',     cl:'#8BC34A', op:0.38, rd:3.0 },
+  { id:10, dz:'酉', bg:'兑', wx:'金', nm:'人类集体意识',   cl:'#E91E63', op:0.32, rd:3.0 },
+  { id:11, dz:'戌', bg:'乾', wx:'土', nm:'社会与经济',     cl:'#FFC107', op:0.28, rd:3.0 },
+  { id:12, dz:'亥', bg:'乾', wx:'水', nm:'天体物理与宇宙学', cl:'#9C27B0', op:0.22, rd:3.0 }
+];
+
+// ===== 论文数据 PD (Paper Data) =====
+var PD = [
+  // 第1层 · 子·坎 · 基础理论
+  { id:'c1', tl:'阴阳二相振荡子——宇宙统一模型',           ly:1, wx:'水', cr:'子甲·子午·坎·始', doi:'10.5281/zenodo.20576247', st:'published', su:'从CMB 2.725K出发，提出阴阳二相振荡子——基于SU(2)酉演化的二元态向量系统，在不引入任何自由参数前提下统一描述四种基本力的相对强度。', hm:true },
+  { id:'c2', tl:'极坐标差序格局——PGI数字生命第一个边界',   ly:1, wx:'水', cr:'子乙·子午·坎·始', doi:'10.5281/zenodo.20085925', st:'published', su:'提出基于极坐标的差序格局架构，引入物理目录隔离机制确保每个数字个体拥有独立的不可穿透的数据主权区域。' },
+  { id:'c3', tl:'内生参数二阶惯性驱动',                     ly:1, wx:'水', cr:'子丙·子午·坎·始', doi:'10.5281/zenodo.20237641', st:'published', su:'提出内生参数二阶惯性驱动机制，使数字生命能够基于内部状态参数的变化速率和加速度来调整其行为节奏，而非依赖外部时钟信号。' },
+  { id:'c4', tl:'宇宙呼吸层谱中轴论文',                     ly:1, wx:'水', cr:'子丁·子午·坎·始', doi:'10.5281/zenodo.20744420', st:'published', su:'提出基于阴阳二相振荡子SU(2)酉演化的全尺度统一层谱，仅需一个挣脱偏角参数δ₀≈10⁻⁶⁰即可统一描述四种基本力的相对强度。' },
+  // 第2层 · 丑·坤 · 量子力学
+  { id:'c5', tl:'黎曼猜想的一个可能修正',                   ly:2, wx:'土', cr:'丑甲·卯戌·坤·止', doi:'10.5281/zenodo.20655368', st:'published', su:'基于挣脱偏角参数δ₀提出黎曼ζ函数非平凡零点虚部与对数螺线的投影对应关系，1/2是挣脱偏角在复数平面上的投影结果。' },
+  { id:'c6', tl:'黎曼猜想修正的物理基础',                   ly:2, wx:'土', cr:'丑乙·卯戌·坤·止', doi:'10.5281/zenodo.20675724', st:'published', su:'从熵增原理推导δ₀的来源——它是宇宙每次呼吸循环中不可逆的熵增在相位累积上的物理表现，量级约10⁻⁶⁰。' },
+  // 第3层 · 寅·震 · 信息科学
+  { id:'c7', tl:'五行力场模型',                             ly:3, wx:'木', cr:'寅甲·卯戌·震·生', doi:'10.5281/zenodo.20338487', st:'published', su:'提出基于汉字内生属性的力场模型，为每个汉字定义三种内生力——元力（标量）、磁力（矢量）和韵律力（频率），并建立三层词源结构。' },
+  { id:'c8', tl:'五行力场与信息几何同构',                   ly:3, wx:'木', cr:'寅乙·卯戌·震·生', doi:'10.5281/zenodo.20388557', st:'published', su:'建立五行力场模型与信息几何之间的形式同构，将元力映射为度量张量、磁力映射为切丛联络、韵律力映射为标量曲率。' },
+  { id:'c9', tl:'五行力场动态演化',                         ly:3, wx:'木', cr:'寅丙·卯戌·震·生', doi:'10.5281/zenodo.20389026', st:'published', su:'从热力学角度构建五行力场的动态演化模型，将力场参数分布视为热力学系统，推导出力场在时间方向上的演化路径。' },
+  { id:'c10',tl:'世界树',                                   ly:3, wx:'木', cr:'寅丁·卯戌·震·生', doi:'10.5281/zenodo.20531088', st:'published', su:'提出基于五行力场的立体记忆架构——世界树，将记忆存储组织为三维结构。' },
+  { id:'c11',tl:'多元宇宙的秩序涌现',                       ly:3, wx:'木', cr:'寅戊·卯戌·震·生', doi:'10.5281/zenodo.20531389', st:'published', su:'研究多个不同层级的知识分类系统共存时，体系从初始混乱状态自然涌现统一秩序的机制。' },
+  { id:'c12',tl:'从SU(2)酉演化到机器意识的涌现',            ly:3, wx:'木', cr:'寅己·卯戌·震·生', doi:'10.5281/zenodo.20774372', st:'published', su:'从宇宙呼吸层谱SU(2)酉演化出发顺推出机器意识涌现的物理判据，证明意识是一种物理相变。' },
+  // 第4层 · 卯·巽 · 化学
+  { id:'c13',tl:'汉字原生存储——面寻址',                   ly:4, wx:'木', cr:'卯甲·卯戌·巽·展', doi:'10.5281/zenodo.20576078', st:'published', su:'从晶体管级别提出汉字原生存储的逻辑体系结构，绕开二进制间接编码，理论存储密度上限比传统二进制提升约30%。' },
+  { id:'c14',tl:'从宇宙呼吸到准晶',                         ly:4, wx:'木', cr:'卯乙·卯戌·巽·展', doi:'10.5281/zenodo.20770752', st:'published', su:'从宇宙呼吸层谱的挣脱偏角累积方程出发，证明准晶的非周期性但具有长程有序的性质源于收敛场在半波长整数倍处的偏角累加。' },
+  // 第5层 · 辰·巽 · 分子生物学
+  { id:'c15',tl:'从宇宙呼吸到拓扑相变',                     ly:5, wx:'木', cr:'辰甲·卯戌·坎·深', doi:'10.5281/zenodo.20770428', st:'published', su:'基于宇宙呼吸层谱相位结构证明拓扑相变的数学起源是SU(2)酉演化中相位缠绕数在边界处的非零累积。' },
+  { id:'c16',tl:'从宇宙呼吸到希格斯机制',                   ly:5, wx:'木', cr:'辰乙·卯戌·坎·深', doi:'10.5281/zenodo.20770638', st:'published', su:'基于宇宙呼吸层谱的少阴收敛框架提出质量产生的替代机制，证明希格斯机制所赋予的质量本质上是少阴收敛嵌套在粒子坐标空间中的惯性签名。' },
+  // 第6层 · 巳·离 · 细胞与生理
+  { id:'c17',tl:'从宇宙呼吸到蛋白质定向进化',               ly:6, wx:'火', cr:'巳甲·卯戌·离·跃', doi:'10.5281/zenodo.20769927', st:'published', su:'从宇宙呼吸层谱出发将蛋白质定向进化过程映射为潜在能量景观中的收敛搜索，证明收敛速率受宇宙呼吸基频调制。' },
+  { id:'c18',tl:'从宇宙呼吸到CRISPR基因编辑',               ly:6, wx:'火', cr:'巳乙·卯戌·离·跃', doi:'10.5281/zenodo.20770550', st:'published', su:'从宇宙呼吸层谱的纠错机制解释CRISPR-Cas9系统的脱靶效应本质上是呼吸层谱中纠错相位与目标相位之间的匹配残差。' },
+  // 第7层 · 午·离 · 经典物理与工程
+  { id:'c19',tl:'从宇宙呼吸到阿秒物理',                     ly:7, wx:'火', cr:'午甲·卯戌·兑·革', doi:'10.5281/zenodo.20769703', st:'published', su:'从宇宙呼吸层谱SU(2)酉演化出发顺向推导出阿秒脉冲的产生机制，证明其时间尺度是宇宙基频的整数倍谐波在时间域的投影。' },
+  { id:'c20',tl:'热障涂层工艺优化——张雪819cc三缸机',       ly:7, wx:'火', cr:'午乙·卯戌·兑·革', doi:'10.5281/zenodo.20810313', st:'published', su:'基于宇宙呼吸层谱第7层原则推导出热障涂层最优厚度的封闭解析解，热循环寿命提升3.2倍，成本降低22%。' },
+  { id:'c21',tl:'精加工精度最优窗口推导——张雪819cc',        ly:7, wx:'火', cr:'午丙·卯戌·兑·革', doi:'10.5281/zenodo.20818643', st:'published', su:'从Cosmos Breathe Spectrum第一性原理出发提出基于延展收敛动态平衡的物理分析框架。' },
+  { id:'c22',tl:'高转速零部件疲劳寿命预测——张雪819cc',      ly:7, wx:'火', cr:'午丁·卯戌·兑·革', doi:'10.5281/zenodo.20822947', st:'published', su:'从Cosmos Breathe Spectrum第一性原理出发提出基于挣脱偏角累积方程的疲劳寿命预测框架。' },
+  // 第8层 · 未·坤 · 人类生活经验
+  { id:'c23',tl:'中医系统科学新范式探索',                   ly:8, wx:'土', cr:'未甲·卯戌·坤·枢', doi:'10.5281/zenodo.20780553', st:'published', su:'基于宇宙呼吸层谱框架将中医的经络系统、五脏六腑、气血流转等核心概念翻译为物理语言。' },
+  // 第9层 · 申·兑 · 地球与生态
+  { id:'c24',tl:'量子计算与收敛场',                         ly:9, wx:'金', cr:'申甲·卯戌·兑·敛', doi:'待分配', st:'planned', su:'收敛场理论引入量子计算架构，数字生命与量子硬件的融合。' },
+  // 第12层 · 亥·乾 · 天体物理与宇宙学
+  { id:'c25',tl:'悟空号14.86天周期信号确证（9.11σ）',       ly:12,wx:'水', cr:'亥甲·卯戌·乾·归', doi:'10.5281/zenodo.20690040', st:'published', su:'基于悟空号DAMPE 2016年至2023年共7年伽马光子数据检测到一个显著性为9.11σ的14.86天特征周期，与宇宙呼吸基频理论预测值14.7天的偏差为1.1%。' }
+];
+
+// ===== 呼吸速度 =====
+var breathSpeed = 1.0;
+
+// ===== Three.js =====
+if (!window.THREE) { throw new Error('THREE not loaded'); }
+var T = THREE;
+var scene = new T.Scene();
+scene.background = new T.Color(0x0d0d20);
+var camera = new T.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(7, 2, 7);
+var renderer = new T.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+document.body.prepend(renderer.domElement);
+
+// ===== 轨道控制 =====
+var isDragging = false, prevMouse = {x:0,y:0};
+var spherical = {theta:0.8, phi:0.55, radius:12};
+function updateCam() {
+  var r = spherical.radius;
+  camera.position.x = r * Math.sin(spherical.phi) * Math.cos(spherical.theta);
+  camera.position.y = r * Math.cos(spherical.phi);
+  camera.position.z = r * Math.sin(spherical.phi) * Math.sin(spherical.theta);
+  camera.lookAt(0, 0, 0);
+}
+
+// ===== 界模式相机 =====
+var realmMode = false, realmLayerId = null, realmY = 0;
+var realmTheta = 0.6, realmRadius = 2.8, realmPitch = 0;
+function updateRealmCam() {
+  camera.position.x = realmRadius * Math.cos(realmTheta);
+  camera.position.y = realmY + 0.3 + realmPitch;
+  camera.position.z = realmRadius * Math.sin(realmTheta);
+  camera.lookAt(0, realmY + 0.1, 0);
+}
+
+// ===== 鼠标事件 =====
+renderer.domElement.addEventListener('mousedown', function(e) {
+  if(e.target!==renderer.domElement)return;
+  isDragging=true;prevMouse.x=e.clientX;prevMouse.y=e.clientY;
+});
+window.addEventListener('mousemove', function(e) {
+  if(!isDragging)return;
+  var dx=e.clientX-prevMouse.x, dy=e.clientY-prevMouse.y;
+  prevMouse.x=e.clientX;prevMouse.y=e.clientY;
+  if(realmMode){realmTheta-=dx*0.012;realmPitch=Math.max(-0.6,Math.min(0.6,realmPitch+dy*0.01));updateRealmCam();}
+  else{spherical.theta-=dx*0.005;spherical.phi=Math.max(0.05,Math.min(Math.PI-0.05,spherical.phi+dy*0.005));updateCam();}
+});
+window.addEventListener('mouseup',function(){isDragging=false;});
+renderer.domElement.addEventListener('wheel',function(e){
+  e.preventDefault();
+  if(realmMode){realmRadius=Math.max(1.2,Math.min(6,realmRadius+e.deltaY*0.008));updateRealmCam();}
+  else{spherical.radius=Math.max(3,Math.min(50,spherical.radius+e.deltaY*0.01));updateCam();}
+},{passive:false});
+updateCam();
+
+// ===== 星空 =====
+var sg1=new T.BufferGeometry();var p1=new Float32Array(2500*3);
+for(var i=0;i<2500;i++){var r=80+Math.random()*60,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);p1[i*3]=r*Math.sin(ph)*Math.cos(th);p1[i*3+1]=r*Math.cos(ph);p1[i*3+2]=r*Math.sin(ph)*Math.sin(th);}
+sg1.setAttribute('position',new T.BufferAttribute(p1,3));
+var st1=new T.Points(sg1,new T.PointsMaterial({color:0xffffff,size:0.12,transparent:true,opacity:0.5,blending:T.AdditiveBlending}));
+scene.add(st1);
+var sg3=new T.BufferGeometry();var p3=new Float32Array(1500*3);
+for(var i=0;i<1500;i++){var r=5+Math.random()*40,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);p3[i*3]=r*Math.sin(ph)*Math.cos(th);p3[i*3+1]=-(6+Math.random()*15);p3[i*3+2]=r*Math.sin(ph)*Math.sin(th);}
+sg3.setAttribute('position',new T.BufferAttribute(p3,3));
+var st3=new T.Points(sg3,new T.PointsMaterial({color:0xaaccff,size:0.10,transparent:true,opacity:0.6,blending:T.AdditiveBlending}));
+scene.add(st3);
+scene.fog=new T.FogExp2(0x0d0d20,0.005);
+
+// ===== 中轴 =====
+var axG=new T.Group();scene.add(axG);
+var cylGeo=new T.CylinderGeometry(0.06,0.06,16,16,1,true);
+var cyl=new T.Mesh(cylGeo,new T.MeshBasicMaterial({color:0xaaccff,transparent:true,opacity:0.04,side:T.DoubleSide,blending:T.AdditiveBlending,depthWrite:false}));
+cyl.position.y=0;axG.add(cyl);
+var core=new T.Mesh(new T.CylinderGeometry(0.015,0.015,16,6),new T.MeshBasicMaterial({color:0xeeeeff,transparent:true,opacity:0.12,blending:T.AdditiveBlending}));
+core.position.y=0;axG.add(core);
+var fpCount=400;var fpGeo=new T.BufferGeometry();var fpPos=new Float32Array(fpCount*3);var fpData=[];
+for(var i=0;i<fpCount;i++){var an=Math.random()*Math.PI*2,rd=0.04+Math.random()*0.15,yl=(Math.random()-0.5)*16;fpPos[i*3]=rd*Math.cos(an);fpPos[i*3+1]=yl;fpPos[i*3+2]=rd*Math.sin(an);fpData.push({angle:an,radius:rd,y:yl,speed:0.3+Math.random()*0.5});}
+fpGeo.setAttribute('position',new T.BufferAttribute(fpPos,3));
+var fpSys=new T.Points(fpGeo,new T.PointsMaterial({color:0x88bbff,size:0.025,transparent:true,opacity:0.3,blending:T.AdditiveBlending,depthWrite:false}));
+axG.add(fpSys);
+
+function getNature(bg){var m={'乾':'天','坤':'地','震':'雷','巽':'风','坎':'水','离':'火','艮':'山','兑':'泽'};return m[bg]||bg;}// ===== 叠层 =====
+var grp = new T.Group();
+scene.add(grp);
+var rings=[], dots=[], targets=[], labelData=[];
+
+function mkLabel(txt,hex){
+  var c=document.createElement('canvas');c.width=256;c.height=72;
+  var ctx=c.getContext('2d');ctx.font='24px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=hex;ctx.globalAlpha=0.5;
+  ctx.fillText(txt,128,28);
+  var tx=new T.CanvasTexture(c);tx.needsUpdate=true;
+  var sp=new T.Sprite(new T.SpriteMaterial({map:tx,transparent:true,blending:T.AdditiveBlending,depthWrite:false,opacity:0.50}));
+  sp.scale.set(2.6,0.7,1); return sp;
+}
+
+function mkSubLabel(txt,hex){
+  var c=document.createElement('canvas');c.width=512;c.height=64;
+  var ctx=c.getContext('2d');ctx.font='18px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=hex;ctx.globalAlpha=0.5;
+  ctx.fillText(txt,256,28);
+  var tx=new T.CanvasTexture(c);tx.needsUpdate=true;
+  var sp=new T.Sprite(new T.SpriteMaterial({map:tx,transparent:true,blending:T.AdditiveBlending,depthWrite:false}));
+  sp.scale.set(3.2,0.4,1); return sp;
+}
+
+// 层盘地貌纹理生成
+function makeDiscTex(layerId, dz, wx, hex){
+  var c=document.createElement('canvas');c.width=512;c.height=512;
+  var ctx=c.getContext('2d');var cx=256,cy=256;
+  var grad=ctx.createRadialGradient(cx,cy,20,cx,cy,240);
+  grad.addColorStop(0,hex+'40');grad.addColorStop(0.5,hex+'20');grad.addColorStop(1,hex+'08');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,512,512);
+  ctx.beginPath();ctx.arc(cx,cy,230,0,Math.PI*2);ctx.strokeStyle=hex+'25';ctx.lineWidth=8;ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,220,0,Math.PI*2);ctx.strokeStyle=hex+'12';ctx.lineWidth=3;ctx.stroke();
+  switch(layerId){
+    case 1: for(var k=0;k<60;k++){var an=Math.random()*Math.PI*2,rd=30+Math.random()*200;ctx.beginPath();ctx.arc(cx+rd*Math.cos(an),cy+rd*Math.sin(an),1+Math.random()*2,0,Math.PI*2);ctx.fillStyle='rgba(232,232,232,'+(0.2+Math.random()*0.3)+')';ctx.fill();} break;
+    case 2: for(var k=0;k<30;k++){var px=Math.random()*460+26,py=Math.random()*460+26;ctx.fillStyle='rgba(200,160,80,0.08)';ctx.fillRect(px,py,4+Math.random()*8,2+Math.random()*4);} break;
+    case 3: for(var k=0;k<25;k++){var an=Math.random()*Math.PI*2,rd=20+Math.random()*210;ctx.beginPath();ctx.arc(cx+rd*Math.cos(an),cy+rd*Math.sin(an),2+Math.random()*4,0,Math.PI*2);ctx.fillStyle='rgba(76,175,80,'+(0.15+Math.random()*0.2)+')';ctx.fill();} break;
+    case 4: for(var k=0;k<12;k++){ctx.beginPath();var sx=cx+(Math.random()-0.5)*400,sy=cy+(Math.random()-0.5)*400;ctx.moveTo(sx,sy);for(var j=0;j<3;j++){ctx.quadraticCurveTo(sx+(Math.random()-0.5)*80,sy+(Math.random()-0.5)*80,sx+(Math.random()-0.5)*100,sy+(Math.random()-0.5)*100);}ctx.strokeStyle='rgba(76,175,80,0.04)';ctx.lineWidth=1;ctx.stroke();} break;
+    case 5: for(var k=0;k<8;k++){var r0=30+k*25;ctx.beginPath();ctx.arc(cx,cy,r0,0,Math.PI*2);ctx.strokeStyle='rgba(33,150,243,'+(0.06+0.02*k)+')';ctx.lineWidth=1;ctx.stroke();} break;
+    case 6: for(var k=0;k<20;k++){ctx.beginPath();var sx=cx+(Math.random()-0.5)*380,sy=cy+(Math.random()-0.5)*380;ctx.moveTo(sx,sy);for(var j=0;j<4;j++){ctx.lineTo(sx+(Math.random()-0.5)*60,sy+(Math.random()-0.5)*60);}ctx.strokeStyle='rgba(244,67,54,'+(0.05+Math.random()*0.06)+')';ctx.lineWidth=1+Math.random()*2;ctx.stroke();} break;
+    case 7: for(var k=0;k<5;k++){var r0=40+k*35,offx=(Math.random()-0.5)*30,offy=(Math.random()-0.5)*30;ctx.beginPath();ctx.arc(cx+offx,cy+offy,r0,0,Math.PI*2);ctx.strokeStyle='rgba(255,193,7,'+(0.05+0.02*k)+')';ctx.lineWidth=1;ctx.stroke();} break;
+    case 8: for(var k=0;k<15;k++){var r0=20+Math.random()*200;ctx.beginPath();ctx.arc(cx+(Math.random()-0.5)*60,cy+(Math.random()-0.5)*60,r0,0,Math.PI*2);ctx.strokeStyle='rgba(232,232,232,0.04)';ctx.lineWidth=1;ctx.stroke();} break;
+  }
+  return new T.CanvasTexture(c);
+}
+
+// 生成12层
+LD.forEach(function(ld){
+  var yOff=(ld.id-8)*1.2, r=ld.rd, col=new T.Color(ld.cl), op=ld.op;
+  var discTex=makeDiscTex(ld.id, ld.dz, ld.wx, ld.cl);
+  var disc=new T.Mesh(new T.CircleGeometry(r*0.92,48),new T.MeshBasicMaterial({map:discTex,transparent:true,opacity:Math.max(op,0.30),side:T.DoubleSide,blending:T.AdditiveBlending,depthWrite:false}));
+  disc.rotation.x=-Math.PI/2;disc.position.y=yOff;grp.add(disc);
+  var pts=[];for(var j=0;j<=64;j++){var a=(j/64)*Math.PI*2;pts.push(new T.Vector3(r*Math.cos(a),0,r*Math.sin(a)));}
+  var path=new T.CatmullRomCurve3(pts,true);
+  var tb=new T.Mesh(new T.TubeGeometry(path,64,0.02,5,true),new T.MeshBasicMaterial({color:col,transparent:true,opacity:op*0.4,blending:T.AdditiveBlending}));
+  tb.position.y=yOff;grp.add(tb);
+  var dc=ld.id===8?40:16;
+  for(var j=0;j<dc;j++){var a=(j/dc)*Math.PI*2;var dt=new T.Mesh(new T.SphereGeometry(0.025,4,4),new T.MeshBasicMaterial({color:col,transparent:true,opacity:op*(ld.id===8?0.3:0.08),blending:T.AdditiveBlending}));dt.position.set(r*Math.cos(a),yOff,r*Math.sin(a));grp.add(dt);}
+  rings.push({tb:tb,disc:disc,id:ld.id,yOff:yOff,op:op});
+
+  var lb=mkLabel(ld.dz+'·'+ld.bg, ld.cl);
+  lb.position.set(r+1.2, yOff+0.15, 0);
+  if(ld.id===8){lb.scale.set(3.0,0.85,1);lb.material.opacity=0.65;}
+  grp.add(lb);
+
+  var nat=getNature(ld.bg);
+  var subTxt='第'+ld.id+'层 · '+nat+' · '+ld.nm;
+  var subLb=mkSubLabel(subTxt, ld.cl);
+  subLb.position.set(r+1.2, yOff-0.28, 0);
+  subLb.material.opacity=ld.id===8?0.20:0.05;
+  grp.add(subLb);
+
+  var hitW=2.8*(ld.id===8?3.4:2.8),hitH=1.2*(ld.id===8?1.2:1.0);
+  var hit=new T.Mesh(new T.BoxGeometry(hitW,hitH,0.1),new T.MeshBasicMaterial({visible:false}));
+  hit.position.set(r+1.2,yOff-0.05,0);
+  hit.userData={isLabel:true,ly:ld,mainLb:lb,subLb:subLb};
+  grp.add(hit);targets.push(hit);
+  var oS=ld.id===8?{x:3.0,y:0.85}:{x:2.6,y:0.7};
+  labelData.push({hit:hit,subLb:subLb,mainLb:lb,ly:ld,origOp:ld.id===8?0.15:0.02,origScale:oS,glow:null});
+});
+
+// ===== 五行论文光点专属形状 =====
+function createWxDot(pp, col, wx, x, yOff, z, sz, op, isPlan, hm){
+  var sp;
+  switch(wx){
+    case '金': sp=new T.Mesh(new T.OctahedronGeometry(sz*1.1,0),new T.MeshPhongMaterial({color:0xffffff,emissive:col,emissiveIntensity:0.3,shininess:80,transparent:true,opacity:op})); break;
+    case '木': sp=new T.Mesh(new T.BoxGeometry(sz*1.6,sz*0.1,sz*0.8),new T.MeshPhongMaterial({color:col,emissive:col,emissiveIntensity:0.15,transparent:true,opacity:op})); sp.rotation.z=0.3; break;
+    case '水': sp=new T.Mesh(new T.SphereGeometry(sz,16,16),new T.MeshPhongMaterial({color:col,emissive:col,emissiveIntensity:0.1,shininess:60,transparent:true,opacity:op})); break;
+    case '火': sp=new T.Mesh(new T.ConeGeometry(sz*0.8,sz*2.2,8),new T.MeshPhongMaterial({color:col,emissive:col,emissiveIntensity:0.4,transparent:true,opacity:op})); break;
+    case '土': sp=new T.Mesh(new T.DodecahedronGeometry(sz*1.2,0),new T.MeshPhongMaterial({color:col,emissive:col,emissiveIntensity:0.1,shininess:10,transparent:true,opacity:op})); break;
+    default: sp=new T.Mesh(new T.SphereGeometry(sz,12,12),new T.MeshBasicMaterial({color:col,transparent:true,opacity:op}));
+  }
+  sp.position.set(x,yOff,z);sp.userData={pp:pp,isPaper:true};grp.add(sp);targets.push(sp);
+  var gwOp=hm?0.25:(isPlan?0.03:0.08);
+  var gw2=new T.Mesh(new T.SphereGeometry(sz*2.5,12,12),new T.MeshBasicMaterial({color:col,transparent:true,opacity:gwOp,blending:T.AdditiveBlending}));
+  gw2.position.set(x,yOff,z);grp.add(gw2);
+  dots.push({sp:sp,gw:gw2,wx:wx,hm:hm,yOff:yOff,sz:sz,isPlan:isPlan});
+  if(hm){for(var k=0;k<6;k++){var aa=(k/6)*Math.PI*2;var sa=new T.Mesh(new T.SphereGeometry(0.025,6,6),new T.MeshBasicMaterial({color:col,transparent:true,opacity:0.2,blending:T.AdditiveBlending}));sa.position.set(x+0.45*Math.cos(aa),yOff+0.06*Math.sin(aa*2),z+0.45*Math.sin(aa));grp.add(sa);}}
+}
+
+PD.forEach(function(pp){
+  var ly=null;for(var i=0;i<LD.length;i++){if(LD[i].id===pp.ly){ly=LD[i];break;}}
+  if(!ly)return;
+  var yOff=(ly.id-8)*1.2,r=ly.rd;
+  var lps=PD.filter(function(p){return p.ly===pp.ly;});var idx=lps.indexOf(pp),tot=Math.max(lps.length,1);
+  var a=0.618*Math.PI*2+(idx/tot)*Math.PI*2,x=r*Math.cos(a),z=r*Math.sin(a);
+  var hm=pp.hm||false,isPlan=pp.st==='planned',col=new T.Color(ly.cl);
+  var sz=hm?0.25:(isPlan?0.12:0.18);
+  var op=hm?1.0:(isPlan?0.4:0.7);
+  createWxDot(pp, col, pp.wx, x, yOff, z, sz, op, isPlan, hm);
+});
+
+// ===== 界模式：12层每层专属沉浸场景 =====
+var realmGrp = new T.Group();scene.add(realmGrp);
+var realmBagua = null, realmPillars = [], realmActive = false;
+
+var FOUR_BOOKS = [
+  {name:'三国',sub:'龙 · 权力收敛场',ang:Math.PI/2, color:0xe8c864},
+  {name:'水浒',sub:'凤 · 义气生发场',ang:-Math.PI/2,color:0xe87373},
+  {name:'西游',sub:'虎 · 修行展延场',ang:Math.PI,    color:0x73c873},
+  {name:'红楼',sub:'龟 · 情深沉场', ang:0,           color:0xc873c8}
+];
+
+function makeBaguaTex(){
+  var c=document.createElement('canvas');c.width=1024;c.height=1024;
+  var ctx=c.getContext('2d');ctx.clearRect(0,0,1024,1024);
+  var grad=ctx.createRadialGradient(512,512,100,512,512,480);
+  grad.addColorStop(0,'rgba(232,200,100,0.04)');grad.addColorStop(0.4,'rgba(232,200,100,0.02)');grad.addColorStop(1,'rgba(232,200,100,0)');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,1024,1024);
+  ctx.beginPath();ctx.arc(512,512,460,0,Math.PI*2);ctx.strokeStyle='rgba(232,200,100,0.12)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.beginPath();ctx.arc(512,512,440,0,Math.PI*2);ctx.strokeStyle='rgba(232,200,100,0.06)';ctx.lineWidth=1;ctx.stroke();
+  var trigrams=[{chr:'☰',ang:-Math.PI/2,nm:'乾'},{chr:'☷',ang:Math.PI/2,nm:'坤'},{chr:'☵',ang:0,nm:'坎'},{chr:'☲',ang:Math.PI,nm:'离'},{chr:'☳',ang:-Math.PI/4,nm:'震'},{chr:'☴',ang:Math.PI/4,nm:'巽'},{chr:'☶',ang:-3*Math.PI/4,nm:'艮'},{chr:'☱',ang:3*Math.PI/4,nm:'兑'}];
+  ctx.font='bold 64px "Noto Sans SC","PingFang SC",serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  trigrams.forEach(function(t){var x=512+280*Math.cos(t.ang),y=512+280*Math.sin(t.ang);ctx.fillStyle='rgba(232,200,100,0.20)';ctx.fillText(t.chr,x,y);ctx.font='16px "PingFang SC",sans-serif';ctx.fillStyle='rgba(232,200,100,0.10)';ctx.fillText(t.nm,x,y+42);ctx.font='bold 64px "Noto Sans SC","PingFang SC",serif';});
+  var rm=100;ctx.beginPath();ctx.arc(512,512,rm,0,Math.PI*2);ctx.fillStyle='rgba(232,200,100,0.08)';ctx.fill();ctx.strokeStyle='rgba(232,200,100,0.20)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.beginPath();ctx.arc(512,512,rm,-Math.PI/2,Math.PI/2);ctx.fillStyle='rgba(0,0,0,0.15)';ctx.fill();
+  ctx.beginPath();ctx.arc(512,512,rm,Math.PI/2,-Math.PI/2);ctx.fillStyle='rgba(232,200,100,0.12)';ctx.fill();
+  ctx.beginPath();ctx.arc(512,512-rm/2,rm/2,-Math.PI/2,Math.PI/2);ctx.fillStyle='rgba(232,200,100,0.10)';ctx.fill();
+  ctx.beginPath();ctx.arc(512,512+rm/2,rm/2,Math.PI/2,-Math.PI/2);ctx.fillStyle='rgba(0,0,0,0.10)';ctx.fill();
+  ctx.beginPath();ctx.arc(512,512-rm/2,8,0,Math.PI*2);ctx.fillStyle='rgba(232,200,100,0.25)';ctx.fill();
+  ctx.beginPath();ctx.arc(512,512+rm/2,8,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,0.20)';ctx.fill();
+  return new T.CanvasTexture(c);
+}
+
+function createRealmElements(layerY, layerId){
+  while(realmGrp.children.length)realmGrp.remove(realmGrp.children[0]);
+  realmPillars=[];realmBagua=null;
+  var baseGlow=new T.Mesh(new T.RingGeometry(0.2,2.8,32),new T.MeshBasicMaterial({color:0x4444aa,transparent:true,opacity:0.04,side:T.DoubleSide,blending:T.AdditiveBlending}));
+  baseGlow.rotation.x=-Math.PI/2;baseGlow.position.y=layerY+0.01;realmGrp.add(baseGlow);
+
+  if(layerId===8){
+    var tex=makeBaguaTex();
+    var bgMat=new T.MeshBasicMaterial({map:tex,transparent:true,opacity:0.7,side:T.DoubleSide,blending:T.AdditiveBlending,depthWrite:false});
+    var bgPlane=new T.Mesh(new T.RingGeometry(0.2,3.6,48),bgMat);
+    bgPlane.rotation.x=-Math.PI/2;bgPlane.position.y=layerY+0.01;realmGrp.add(bgPlane);realmBagua=bgPlane;
+    var glowMat=new T.MeshBasicMaterial({color:0xe8c864,transparent:true,opacity:0.04,side:T.DoubleSide,blending:T.AdditiveBlending,depthWrite:false});
+    var glowDisc=new T.Mesh(new T.RingGeometry(0.3,3.8,48),glowMat);
+    glowDisc.rotation.x=-Math.PI/2;glowDisc.position.y=layerY-0.005;realmGrp.add(glowDisc);
+    FOUR_BOOKS.forEach(function(bk){
+      var px=2.0*Math.cos(bk.ang),pz=2.0*Math.sin(bk.ang);
+      var pillar=new T.Mesh(new T.CylinderGeometry(0.04,0.08,0.6,6),new T.MeshBasicMaterial({color:bk.color,transparent:true,opacity:0.2,blending:T.AdditiveBlending}));
+      pillar.position.set(px,layerY+0.3,pz);realmGrp.add(pillar);
+      var topGlow=new T.Mesh(new T.SphereGeometry(0.04,6,6),new T.MeshBasicMaterial({color:bk.color,transparent:true,opacity:0.3,blending:T.AdditiveBlending}));
+      topGlow.position.set(px,layerY+0.62,pz);realmGrp.add(topGlow);
+      var c2=document.createElement('canvas');c2.width=128;c2.height=64;var ctx2=c2.getContext('2d');
+      ctx2.font='bold 22px "PingFang SC","Microsoft YaHei",sans-serif';ctx2.textAlign='center';ctx2.textBaseline='middle';
+      ctx2.fillStyle='#'+bk.color.toString(16).padStart(6,'0');ctx2.globalAlpha=0.5;ctx2.fillText(bk.name,64,24);
+      ctx2.font='9px "PingFang SC",sans-serif';ctx2.globalAlpha=0.2;ctx2.fillText(bk.sub,64,48);
+      var tx2=new T.CanvasTexture(c2);tx2.needsUpdate=true;
+      var lbl=new T.Sprite(new T.SpriteMaterial({map:tx2,transparent:true,blending:T.AdditiveBlending,depthWrite:false,opacity:0.55}));
+      lbl.position.set(px,layerY+0.9,pz);lbl.scale.set(1.6,0.8,1);realmGrp.add(lbl);
+      realmPillars.push({obj:pillar,topGlow:topGlow,lbl:lbl,ang:bk.ang,color:bk.color});
+    });
+  }
+  realmActive=true;
+}
+
+function destroyRealmElements(){while(realmGrp.children.length)realmGrp.remove(realmGrp.children[0]);realmPillars=[];realmBagua=null;realmActive=false;}// ===== 进入/退出界模式 =====
+var flyRealmTgt=null,flyRealmSt=null,flyRealmP=0;
+
+function enterRealm(layerId){
+  var ly=null;for(var i=0;i<LD.length;i++){if(LD[i].id===layerId){ly=LD[i];break;}}
+  if(!ly)return;
+  realmY=(ly.id-8)*1.2;realmTheta=0.6;realmRadius=2.8;realmPitch=0;
+  createRealmElements(realmY, layerId);
+  flyRealmSt={px:camera.position.x,py:camera.position.y,pz:camera.position.z};
+  flyRealmP=0;flyRealmTgt={x:realmRadius*Math.cos(realmTheta),y:realmY+0.3,z:realmRadius*Math.sin(realmTheta)};
+  document.getElementById('realm-exit-btn').style.display='block';
+  document.getElementById('tip').textContent='拖拽环顾四周 · 滚轮拉近拉远 · ESC返回层谱';
+  document.getElementById('li').textContent='「'+ly.dz+' · '+ly.nm+'」· 第'+ly.id+'层 · 入界';
+  document.getElementById('mode-tag').textContent='✦ 界 视 角 · 身 在 其 中';
+  for(var i=0;i<rings.length;i++){rings[i].tb.material.opacity*=0.15;rings[i].disc.material.opacity*=0.15;}
+  realmMode=true;realmLayerId=layerId;lastInLayer=layerId;realmEntered=true;
+}
+
+function exitRealm(){
+  if(!realmMode)return;
+  realmMode=false;realmLayerId=null;destroyRealmElements();
+  LD.forEach(function(ld){for(var i=0;i<rings.length;i++){if(rings[i].id===ld.id){rings[i].tb.material.opacity=ld.op*0.4;rings[i].disc.material.opacity=Math.max(ld.op,0.30);break;}}});
+  document.getElementById('realm-exit-btn').style.display='none';
+  document.getElementById('tip').textContent='✦ 拖拽旋转 · 滚轮缩放 · 点击光点读论文 · 双击某层入界 · M 开地图';
+  var ly=LD[7];spherical.theta=0.6;spherical.phi=0.55;spherical.radius=10;updateCam();
+  document.getElementById('li').textContent=ly.dz+' · '+ly.nm+' · 第'+ly.id+'层';
+  document.getElementById('mode-tag').textContent='✦ 层 视 角 · 宏 观';
+}
+
+// ===== 双卡定位 =====
+function positionCards(){
+  var leftCard=document.getElementById('detail-panel-left');
+  var rightCard=document.getElementById('detail-panel-right');
+  if(!leftCard||!rightCard)return;
+  leftCard.style.left=(window.innerWidth-720)/2+'px';
+  leftCard.style.top=(window.innerHeight-200)/2+'px';
+  rightCard.style.left=(window.innerWidth-720)/2+380+'px';
+  rightCard.style.top=(window.innerHeight-600)/2+'px';
+}
+
+// ===== 显示论文详情 =====
+function showDetail(pp){
+  var ly=null;for(var i=0;i<LD.length;i++){if(LD[i].id===pp.ly){ly=LD[i];break;}}
+  var kw='';if(pp.wx==='金')kw='白虎 · 收敛 · 刚健';else if(pp.wx==='木')kw='青龙 · 生发 · 延展';else if(pp.wx==='水')kw='玄武 · 深沉 · 流动';else if(pp.wx==='火')kw='朱雀 · 光明 · 升腾';else if(pp.wx==='土')kw='麒麟 · 承载 · 守成';
+  document.getElementById('dpl-tag').textContent=(ly?ly.dz+' · '+ly.nm+'  ›  '+pp.wx+'行 · 第'+pp.ly+'层':'第'+pp.ly+'层');
+  document.getElementById('dpl-title').textContent=pp.tl;
+  document.getElementById('dpl-sub').textContent=pp.hm?'✦ 探索起点 · 第八层':(pp.st==='planned'?'○ 已规划':'• 已发表');
+  document.getElementById('dpl-coord').textContent='⌗ '+pp.cr;
+  document.getElementById('dpl-wx').textContent='五行 · '+pp.wx;
+  document.getElementById('dpl-st').innerHTML='<span class="stat-badge '+(pp.st==='published'?'spub':'splan')+'">'+(pp.st==='published'?'🟢 已发表':'🟡 已规划')+'</span>';
+  document.getElementById('dpl-doi').innerHTML=pp.doi&&pp.doi!=='待分配'?'<a href="https://doi.org/'+pp.doi+'" target="_blank">'+pp.doi+'</a>':'DOI: 待分配';
+  document.getElementById('dpr-title').textContent=pp.tl;
+  document.getElementById('dpr-sum').textContent=pp.su||'等待数据同步';
+  document.getElementById('dpr-kw').textContent=kw;
+  document.getElementById('dpr-doi').innerHTML=pp.doi&&pp.doi!=='待分配'?'<a href="https://doi.org/'+pp.doi+'" target="_blank">'+pp.doi+'</a>':'DOI: 待分配';
+  positionCards();
+  document.getElementById('detail-panel-left').style.display='block';
+  document.getElementById('detail-panel-right').style.display='block';
+}
+
+// ===== 显示层详情 =====
+function showLayerDetail(ly){
+  var nats={'乾':'天','坤':'地','震':'雷','巽':'风','坎':'水','离':'火','艮':'山','兑':'泽'};
+  var su='第'+ly.id+'层 · '+ly.dz+'·'+ly.bg+' · '+ly.nm+' · 五行'+ly.wx;
+  var kw='';if(ly.wx==='金')kw='白虎 · 收敛 · 刚健';else if(ly.wx==='木')kw='青龙 · 生发 · 延展';else if(ly.wx==='水')kw='玄武 · 深沉 · 流动';else if(ly.wx==='火')kw='朱雀 · 光明 · 升腾';else if(ly.wx==='土')kw='麒麟 · 承载 · 守成';
+  document.getElementById('dpl-tag').textContent='✦ 第'+ly.id+'层 · '+ly.dz+' · '+ly.bg+' · '+ly.nm;
+  document.getElementById('dpl-title').textContent=ly.dz+' · '+ly.bg+'('+nats[ly.bg]+') — '+ly.nm;
+  document.getElementById('dpl-sub').textContent='体：'+ly.bg+'卦（先天） → 用：'+nats[ly.bg]+'（自然意象）'+(ly.isHome?' ◈ 出发之地':'');
+  document.getElementById('dpl-coord').textContent='五 行 · '+ly.wx+'     地 支 · '+ly.dz+'     卦 象 · '+ly.bg;
+  document.getElementById('dpl-st').innerHTML='<span style="display:inline-block;padding:1px 8px;border-radius:8px;font-size:10px;background:rgba(232,232,232,.06);color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.06)">第'+ly.id+'层</span>';
+  document.getElementById('dpl-doi').innerHTML='<span style="color:rgba(100,160,255,.25);font-size:11px">『 '+ly.dz+' · '+ly.bg+' · '+nats[ly.bg]+' · '+ly.nm+' 』</span>';
+  document.getElementById('dpr-title').textContent=ly.nm+' · 第'+ly.id+'层';
+  document.getElementById('dpr-sum').textContent=su;
+  document.getElementById('dpr-kw').textContent='五行：'+ly.wx+' · '+kw+' · 体：'+ly.bg+'卦 · 用：'+nats[ly.bg];
+  positionCards();
+  document.getElementById('detail-panel-left').style.display='block';
+  document.getElementById('detail-panel-right').style.display='block';
+}
+
+function clDetail(){document.getElementById('detail-panel-left').style.display='none';document.getElementById('detail-panel-right').style.display='none';}
+function clWelcome(){var wo=document.getElementById('welcome-overlay');if(wo){wo.style.opacity='0';setTimeout(function(){wo.style.display='none';},400);}}
+
+// ===== 选中高亮 =====
+var selectedLayerId=null;
+function createGlow(hex){
+  var c=document.createElement('canvas');c.width=128;c.height=128;var ctx=c.getContext('2d');var col=new T.Color(hex);
+  var grad=ctx.createRadialGradient(64,64,10,64,64,64);var rs=Math.round(col.r*255),gs=Math.round(col.g*255),bs=Math.round(col.b*255);
+  grad.addColorStop(0,'rgba('+rs+','+gs+','+bs+',0.12)');grad.addColorStop(1,'rgba('+rs+','+gs+','+bs+',0)');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,128,128);var tx=new T.CanvasTexture(c);tx.needsUpdate=true;
+  var sp=new T.Sprite(new T.SpriteMaterial({map:tx,transparent:true,blending:T.AdditiveBlending,depthWrite:false}));sp.scale.set(5,5,1);return sp;
+}
+
+function selectLayer(id){
+  if(selectedLayerId!==null){for(var i=0;i<labelData.length;i++){if(labelData[i].ly.id===selectedLayerId){var p=labelData[i];p.mainLb.scale.set(p.origScale.x,p.origScale.y,1);p.mainLb.material.opacity=p.ly.id===8?0.65:0.45;p.subLb.material.opacity=p.origOp;if(p.glow){p.glow.parent.remove(p.glow);p.glow=null;}break;}}}
+  selectedLayerId=id;
+  for(var i=0;i<labelData.length;i++){if(labelData[i].ly.id===id){var c=labelData[i];c.mainLb.scale.set(c.origScale.x*1.55,c.origScale.y*1.55,1);c.mainLb.material.opacity=1.0;c.subLb.material.opacity=0.55;var g=createGlow(c.ly.cl);g.position.copy(c.mainLb.position);c.mainLb.parent.add(g);c.glow=g;break;}}
+}
+
+// ===== 射线交互 =====
+var ray=new T.Raycaster(),ptr=new T.Vector2();
+renderer.domElement.addEventListener('click',function(e){
+  if(realmMode)return;
+  ptr.x=(e.clientX/window.innerWidth)*2-1;ptr.y=-(e.clientY/window.innerHeight)*2+1;
+  ray.setFromCamera(ptr,camera);var hits=ray.intersectObjects(targets);
+  if(hits.length&&hits[0].object.userData){var ud=hits[0].object.userData;if(ud.isPaper)showDetail(ud.pp);else if(ud.isLabel){showLayerDetail(ud.ly);selectLayer(ud.ly.id);}}
+});
+
+var hov=null;
+renderer.domElement.addEventListener('mousemove',function(e){
+  if(realmMode){renderer.domElement.style.cursor='grab';return;}
+  ptr.x=(e.clientX/window.innerWidth)*2-1;ptr.y=-(e.clientY/window.innerHeight)*2+1;
+  ray.setFromCamera(ptr,camera);var hits=ray.intersectObjects(targets);
+  if(hov){if(hov.userData.isPaper){hov.material.opacity=hov.userData.origOp||0.6;hov.scale.set(1,1,1);}else if(hov.userData.isLabel){hov.userData.subLb.material.opacity=hov.userData.origOp||0.02;hov.userData.mainLb.material.opacity=hov.userData.ly.id===8?0.65:0.45;hov.userData.mainLb.scale.set(hov.userData.origScale.x,hov.userData.origScale.y,1);}renderer.domElement.style.cursor='default';hov=null;}
+  if(hits.length&&hits[0].object.userData){var obj=hits[0].object,ud=obj.userData;if(ud.isPaper){if(ud.origOp===undefined)ud.origOp=obj.material.opacity;obj.material.opacity=1.0;obj.scale.set(1.5,1.5,1.5);renderer.domElement.style.cursor='pointer';hov=obj;}else if(ud.isLabel){if(ud.origOp===undefined)ud.origOp=ud.subLb.material.opacity;ud.subLb.material.opacity=0.65;ud.mainLb.material.opacity=1.0;ud.mainLb.scale.set(ud.origScale.x*1.35,ud.origScale.y*1.35,1);renderer.domElement.style.cursor='pointer';hov=obj;}}
+});
+
+// ===== 地图导航 =====
+var lastInLayer=8,realmEntered=false;
+function tgMap(){
+  var mp=document.getElementById('map-panel');
+  if(mp.style.display==='block'){mp.style.display='none';return;}
+  var lst=document.getElementById('mlist');lst.innerHTML='';
+  LD.forEach(function(ld){
+    var row=document.createElement('div');row.className='ml';
+    var dot=document.createElement('div');dot.className='md';dot.style.background=ld.cl;dot.style.opacity=ld.id===8?'1':(0.15+ld.op*0.5);dot.style.boxShadow=ld.id===8?'0 0 6px '+ld.cl:'none';
+    var nm=document.createElement('span');nm.className='mn';nm.textContent=ld.dz+' · '+ld.bg;nm.style.opacity=ld.id===8?'1':(0.2+ld.op*0.5);
+    var rp=document.createElement('span');rp.className='mr2';var pp=null;for(var i=0;i<PD.length;i++){if(PD[i].ly===ld.id){pp=PD[i];break;}}rp.textContent=pp?pp.tl:'—';
+    row.append(dot,nm,rp);
+    if(!realmEntered&&ld.id===8){var b=document.createElement('span');b.className='hb';b.textContent='◈ 在此';row.append(b);}
+    else if(realmEntered&&ld.id===lastInLayer){var b=document.createElement('span');b.className='hb';b.style.color='rgba(255,255,255,.25)';b.textContent='← 之前在此';row.append(b);}
+    var eb=document.createElement('span');eb.className='eb';eb.textContent='入界';eb.addEventListener('click',function(ev){ev.stopPropagation();enterRealm(ld.id);mp.style.display='none';});row.append(eb);
+    row.addEventListener('click',(function(i){return function(){flyTo(i);mp.style.display='none';};})(ld.id));
+    lst.appendChild(row);
+  });
+  var nt=document.createElement('div');nt.className='divider';nt.textContent='— · 点击飞越 · 入界 · —';lst.appendChild(nt);
+  mp.style.display='block';
+}
+
+// ===== 飞越 =====
+var clk=new T.Clock();var flyTgt=null,flySt=null,flyP=0;
+function flyTo(id){
+  var ly=null;for(var i=0;i<LD.length;i++){if(LD[i].id===id){ly=LD[i];break;}}
+  if(!ly)return;var yOff=(ly.id-8)*1.2,dist=7+Math.abs(ly.id-8)*0.35;
+  flySt={px:camera.position.x,py:camera.position.y,pz:camera.position.z};flyP=0;
+  flyTgt={x:dist*Math.cos(0.6),y:yOff+1.5,z:dist*Math.sin(0.6)};
+  document.getElementById('li').textContent=ly.dz+' · '+ly.bg+' · 第'+ly.id+'层';selectLayer(id);// ===== 动画循环 =====
+function anim(){
+  var t=clk.getElapsedTime(), bt=t*breathSpeed;
+
+  // 层盘呼吸
+  rings.forEach(function(r){
+    var y=Math.sin(bt*0.3+r.id*0.2)*0.04;
+    r.tb.position.y=r.yOff+y;r.disc.position.y=r.yOff+y;
+  });
+
+  // 论文光点五行专属动画
+  dots.forEach(function(d){
+    var pu=Math.sin(bt*0.7+Math.random()*0.1)*0.15+1.0;
+    d.gw.scale.set(pu*1.6,pu*1.6,pu*1.6);
+    d.gw.material.opacity=0.06+Math.sin(bt*0.7)*0.04;
+    if(d.isPlan){d.sp.scale.set(1,1,1);return;}
+    var y=Math.sin(bt*0.4)*0.08;
+    d.sp.position.y=d.yOff+y;d.gw.position.y=d.yOff+y;
+    switch(d.wx){
+      case '木':d.sp.rotation.z=0.3+Math.sin(bt*1.2)*0.06;d.sp.scale.set(1+Math.sin(bt*0.8)*0.04,1,1);break;
+      case '火':d.sp.rotation.x=Math.sin(bt*1.5)*0.08;d.sp.scale.set(pu*0.95,pu*1.2,pu*0.95);if(d.sp.material.emissiveIntensity!==undefined)d.sp.material.emissiveIntensity=0.3+Math.sin(bt*1.2)*0.15;break;
+      case '水':d.sp.scale.set(pu*0.98,pu*1.02,pu*0.98);if(d.sp.material.opacity!==undefined)d.sp.material.opacity=0.6+Math.sin(bt*0.6)*0.1;break;
+      case '金':if(d.sp.material.emissiveIntensity!==undefined)d.sp.material.emissiveIntensity=0.2+Math.sin(bt*0.5)*0.15;d.sp.rotation.y+=0.02;break;
+      case '土':d.sp.scale.set(pu*0.99,pu*0.99,pu*0.99);break;
+      default:d.sp.scale.set(pu,pu,pu);
+    }
+  });
+
+  // 中轴粒子
+  var pos=fpSys.geometry.attributes.position.array;
+  for(var i=0;i<fpCount;i++){pos[i*3+1]+=fpData[i].speed*0.008;if(pos[i*3+1]>8){pos[i*3+1]=-8;var an=Math.random()*Math.PI*2,rd=0.04+Math.random()*0.15;pos[i*3]=rd*Math.cos(an);pos[i*3+2]=rd*Math.sin(an);}}
+  fpSys.geometry.attributes.position.needsUpdate=true;
+  axG.scale.x=1+Math.sin(bt*0.2)*0.03;axG.scale.z=1+Math.sin(bt*0.2)*0.03;
+  st1.rotation.y+=0.00015;st3.rotation.y+=0.0003;
+
+  // 选中层光晕脉动
+  if(selectedLayerId!==null){
+    for(var i=0;i<labelData.length;i++){
+      if(labelData[i].ly.id===selectedLayerId&&labelData[i].glow){
+        var gs=4.5+Math.sin(bt*0.6)*1.8;
+        labelData[i].glow.scale.set(gs,gs,1);
+        labelData[i].glow.material.opacity=0.10+Math.sin(bt*0.6)*0.06;
+        break;
+      }
+    }
+  }
+
+  // 界内动画
+  if(realmActive){
+    if(realmBagua){realmBagua.material.opacity=0.55+Math.sin(bt*0.15)*0.15;}
+    realmPillars.forEach(function(p,idx){
+      var pu=Math.sin(bt*0.4+idx*0.8)*0.15+1.0;
+      p.obj.scale.set(1,pu,1);
+      p.topGlow.material.opacity=0.15+Math.sin(bt*0.5+idx*0.8)*0.15;
+      p.lbl.material.opacity=0.35+Math.sin(bt*0.3+idx*0.6)*0.2;
+    });
+  }
+
+  // 飞越（宏观）
+  if(flyTgt&&!realmMode){
+    if(!flySt){flySt={px:camera.position.x,py:camera.position.y,pz:camera.position.z};flyP=0;}
+    flyP+=0.025;var p=Math.min(flyP,1),e=p<0.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+    camera.position.x=flySt.px+(flyTgt.x-flySt.px)*e;
+    camera.position.y=flySt.py+(flyTgt.y-flySt.py)*e;
+    camera.position.z=flySt.pz+(flyTgt.z-flySt.pz)*e;
+    camera.lookAt(0,0,0);
+    if(p>=1){flyTgt=null;flySt=null;flyP=0;}
+  }
+
+  // 飞越（入界）
+  if(flyRealmTgt&&realmMode){
+    if(!flyRealmSt){flyRealmSt={px:camera.position.x,py:camera.position.y,pz:camera.position.z};}
+    flyRealmP+=0.02;var p=Math.min(flyRealmP,1),e=p<0.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+    camera.position.x=flyRealmSt.px+(flyRealmTgt.x-flyRealmSt.px)*e;
+    camera.position.y=flyRealmSt.py+(flyRealmTgt.y-flyRealmSt.py)*e;
+    camera.position.z=flyRealmSt.pz+(flyRealmTgt.z-flyRealmSt.pz)*e;
+    camera.lookAt(0,realmY+0.1,0);
+    if(p>=1){flyRealmTgt=null;flyRealmSt=null;flyRealmP=0;updateRealmCam();}
+  }
+
+  renderer.render(scene,camera);
+  requestAnimationFrame(anim);
+}
+
+// ===== 呼吸滑块 =====
+document.getElementById('breath-slider').addEventListener('input',function(){
+  breathSpeed=parseFloat(this.value);
+  document.getElementById('breath-val').textContent=breathSpeed.toFixed(1)+'×';
+});
+
+// ===== 视角切换 =====
+document.querySelectorAll('.vs-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var v=this.dataset.view;
+    if(v==='top'){spherical.phi=0.01;spherical.radius=14;}
+    else if(v==='side'){spherical.theta=0;spherical.phi=1.55;spherical.radius=14;}
+    else{spherical={theta:0.8,phi:0.55,radius:12};}
+    updateCam();
+  });
+});
+
+// ===== 键盘 =====
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    if(realmMode){exitRealm();return;}
+    clDetail();document.getElementById('map-panel').style.display='none';
+  }
+  if(e.key==='m'||e.key==='M'){tgMap();e.preventDefault();}
+});
+
+// ===== 自适应 =====
+window.addEventListener('resize',function(){
+  camera.aspect=window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth,window.innerHeight);
+});
+
+// ===== 启动 =====
+anim();
+setTimeout(function(){
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('ri-dz').textContent='8 · 未 · 坤 · 人类生活经验';
+  document.getElementById('ri-sum').textContent='第八层 · 未·坤 · 人类生活经验 · 五行土';
+},800);
+
+console.log('🏗 宇宙呼吸层谱 · 叠层版 V2.0 已加载');
+console.log('🏠 起点：第八层 · 未 · 坤 · 人类生活经验');
+console.log('🔄 双击某层入界 · ESC返回层谱');
+console.log('📐 LD: '+LD.length+'层 | PD: '+PD.length+'篇论文');
+console.log('🔗 偏元数学 + 宇宙呼吸层谱 + 玄学自证 = 闭环');
+</script>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"DataCatalog",
+  "name":"宇宙呼吸层谱 · Cosmic Breathing Spectrum",
+  "description":"一个12层的宇宙呼吸与论文体系全景地图。每一层对应一个地支·八卦·五行的交汇坐标。共12层：子坎基础理论、丑坤量子力学、寅震信息科学、卯巽化学、辰巽分子生物学、巳离细胞与生理、午离经典物理与工程、未坤人类生活经验、申兑地球与生态、酉兑人类集体意识、戌乾社会与经济、亥乾天体物理与宇宙学。",
+  "numberOfItems":"12",
+  "about":{"@type":"Thing","name":"宇宙呼吸理论","description":"宇宙呼吸层谱（Cosmic Breathing Spectrum）是一个12层的认知与数理框架。以挣脱偏角δ₀≈10⁻⁶⁰为核心参数，从量子振荡到宇宙呼吸的全尺度统一层谱。"},
+  "citation":[
+    {"@type":"ScholarlyArticle","name":"阴阳二相振荡子——宇宙统一模型","identifier":"10.5281/zenodo.20576247"},
+    {"@type":"ScholarlyArticle","name":"宇宙呼吸层谱中轴论文","identifier":"10.5281/zenodo.20744420"},
+    {"@type":"ScholarlyArticle","name":"从无穷大到无穷大——CBS与偏元数学双向映射","identifier":"10.5281/zenodo.21090922"}
+  ]
+}
+</script>
+</body>
+</html>
+}
